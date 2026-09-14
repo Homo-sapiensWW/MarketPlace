@@ -6,8 +6,6 @@ from app.models import Users, Item
 from app.schemas import CategoryResponse, CategoryCreate, UserResponse, ItemResponse
 from app.models import Category
 
-router = APIRouter(prefix='/admin', tags=['Admin'])
-
 
 def require_admin(current_user: Users = Depends(get_current_user)) -> Users:
     if current_user.role != 'admin':
@@ -15,9 +13,11 @@ def require_admin(current_user: Users = Depends(get_current_user)) -> Users:
     return current_user
 
 
+router = APIRouter(prefix='/admin', tags=['Admin'], dependencies=Depends(require_admin))
+
+
 @router.post('/categories', response_model=CategoryResponse)
-def category_create(category: CategoryCreate, db: Session = Depends(get_db),
-                    current_user: Users = Depends(require_admin)) -> Category:
+def category_create(category: CategoryCreate, db: Session = Depends(get_db)) -> Category:
     existing_category = db.query(Category).filter(Category.name == category.name).first()
     if existing_category:
         raise HTTPException(status_code=400, detail='category already existing')
@@ -29,7 +29,7 @@ def category_create(category: CategoryCreate, db: Session = Depends(get_db),
 
 
 @router.patch('/users/{user_id}/role', response_model=UserResponse)
-def switch_role(user_id: int, current_user: Users = Depends(require_admin), db: Session = Depends(get_db)):
+def switch_role(user_id: int, db: Session = Depends(get_db)):
     get_user: Users | None = db.query(Users).filter(Users.id == user_id).first()
     if not get_user:
         raise HTTPException(status_code=404, detail='user not found')
@@ -40,7 +40,7 @@ def switch_role(user_id: int, current_user: Users = Depends(require_admin), db: 
 
 
 @router.delete('/items/{item_id}', response_model=ItemResponse)
-def delete_item(item_id: int, db: Session = Depends(get_db), current_user: Users = Depends(require_admin)):
+def delete_item(item_id: int, db: Session = Depends(get_db)):
     item: Item | None = db.query(Item).filter(Item.id == item_id).first()
     if not item:
         raise HTTPException(status_code=404, detail='item not found')
