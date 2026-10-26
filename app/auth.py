@@ -5,9 +5,10 @@ from dotenv import load_dotenv
 from datetime import datetime, timedelta, timezone
 from fastapi import HTTPException, Depends
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from app.database import get_db
 from app.models import Users
+from sqlalchemy import select
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 ALGORITHM = "HS256"
@@ -34,8 +35,8 @@ def create_access_token(data: dict):
 security = HTTPBearer()
 
 
-def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security),
-                     db: Session = Depends(get_db)) -> Users:
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security),
+                     db: AsyncSession = Depends(get_db)) -> Users:
     token = credentials.credentials
     try:
         decode_jwt = jwt.decode(token, os.getenv('SECRET_KEY'), algorithms=[ALGORITHM])
@@ -44,7 +45,8 @@ def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(securit
         raise HTTPException(status_code=401)
     except jwt.InvalidTokenError:
         raise HTTPException(status_code=401)
-    user = db.query(Users).filter(Users.username == username).first()
+    res = await db.execute(select(Users).where(Users.username==username))
+    user = res.scalar_one_or_none()
     if user is None:
         raise HTTPException(
             status_code=401)
