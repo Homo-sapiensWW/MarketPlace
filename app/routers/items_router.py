@@ -1,3 +1,5 @@
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
 from app.models import Item, Users, Transactions
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
@@ -9,8 +11,9 @@ router = APIRouter(prefix="/items", tags=["Items"])
 
 
 @router.get('', response_model=list[ItemResponse])
-def get_items_in_stock(db: Session = Depends(get_db)) -> list[Item]:
-    items_in_stock = db.query(Item).filter(Item.is_sold == False).all()
+async def get_items_in_stock(db: AsyncSession = Depends(get_db)) -> list[Item]:
+    res = await db.execute(select(Item).where(Item.is_sold==False))
+    items_in_stock = res.scalars().all()
     return items_in_stock
 
 
