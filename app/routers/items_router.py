@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from app.models import Item, Users, Transactions
+from app.models import Item, Users, Transactions, Category
 from fastapi import APIRouter, Depends, HTTPException
 from app.database import get_db
 from app.auth import get_current_user
@@ -19,6 +19,8 @@ async def get_items_in_stock(db: AsyncSession = Depends(get_db)) -> list[Item]:
 @router.post('', response_model=ItemResponse)
 async def set_item_on_market(item: ItemCreate, db: AsyncSession = Depends(get_db),
                        current_user: Users = Depends(get_current_user)) -> Item:
+    if await db.get(Category, item.category_id) is None:
+        raise HTTPException(status_code=404, detail='category not found')
     db_item = Item(title=item.title, description=item.description, price=item.price, is_sold=False,
                    category_id=item.category_id, owner_id=current_user.id)
     db.add(db_item)
