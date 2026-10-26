@@ -1,9 +1,9 @@
 from pydantic import BaseModel, ConfigDict
-
+from pydantic import Field
 
 class UserCreate(BaseModel):
-    username: str
-    password: str
+    username: str = Field(min_length=3, max_length=50)
+    password: str = Field(min_length=8, max_length=72)
 
 
 class UserResponse(BaseModel):
@@ -21,7 +21,7 @@ class Token(BaseModel):
 class ItemCreate(BaseModel):
     title: str
     description: str | None = None
-    price: float
+    price: float = Field(gt=0)
     category_id: int
 
 
