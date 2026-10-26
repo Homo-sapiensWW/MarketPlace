@@ -15,13 +15,13 @@ def require_admin(current_user: Users = Depends(get_current_user)) -> Users:
     return current_user
 
 
-router = APIRouter(prefix='/admin', tags=['Admin'], dependencies=Depends(require_admin))
+router = APIRouter(prefix='/admin', tags=['Admin'], dependencies=[Depends(require_admin)])
 
 
 @router.post('/categories', response_model=CategoryResponse)
 async def category_create(category: CategoryCreate, db: AsyncSession = Depends(get_db)) -> Category:
-    existing_category =await db.execute(select(Category).where(Category.name==category.name))
-    if existing_category:
+    res = await db.execute(select(Category).where(Category.name == category.name))
+    if res.scalar_one_or_none() is not None:
         raise HTTPException(status_code=400, detail='category already existing')
     db_category = Category(name=category.name)
     db.add(db_category)
@@ -42,7 +42,7 @@ async def switch_role(user_id: int, db: AsyncSession = Depends(get_db)):
     return get_user
 
 
-@router.delete('/items/{item_id}', response_model=ItemResponse)
+@router.delete('/items/{item_id}', status_code=204)
 async def delete_item(item_id: int, db: AsyncSession = Depends(get_db)):
     res = await db.execute(select(Item).where(Item.id==item_id))
     item = res.scalar_one_or_none()
