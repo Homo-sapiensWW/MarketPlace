@@ -5,7 +5,7 @@ from app.schemas import UserCreate, UserResponse
 from fastapi import Depends
 from app.database import get_db
 from sqlalchemy.orm import Session
-from app.auth import hash_password, verify_password, create_access_token
+from app.auth import hash_password, verify_password, create_access_token, get_current_user
 from app.models import Users
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy import select
@@ -36,3 +36,7 @@ async def user_login(form_data: OAuth2PasswordRequestForm = Depends(), db: Async
         raise HTTPException(status_code=401, detail="Invalid login or password")
     access_token = create_access_token(data={'sub': user.username})
     return {"access_token": access_token, "token_type": "bearer"}
+
+@router.get('/me', response_model=UserResponse)
+async def read_me(current_user = Depends(get_current_user)):
+    return current_user
