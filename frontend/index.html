@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarketPlace</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&display=swap">
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Manrope,system-ui,sans-serif;background:#ECEFEA;color:#1C2B2D}
+:focus-visible{outline:3px solid #1F6F6B;outline-offset:2px}
+button,input,select,textarea{font-family:inherit}
+.hd{display:flex;align-items:center;justify-content:space-between;padding:16px 48px;background:#fff;border-bottom:1px solid #D3DAD6}
+.hd[hidden]{display:none}
+.logo{display:flex;gap:10px;align-items:center;font-size:20px;font-weight:800;letter-spacing:-.02em;background:none;border:0;padding:0;color:inherit;cursor:pointer}
+.logo svg{color:#1F6F6B}
+.nav{display:flex;gap:16px;align-items:center;font-size:15px;font-weight:600}
+.bal{background:#D5E6E1;padding:8px 14px;border-radius:999px}
+.lnk{background:none;border:0;font-size:15px;font-weight:600;color:#1C2B2D;cursor:pointer;min-height:44px;padding:0 6px}
+.lnk.bad{color:#B3402F}
+.btn{background:#1F6F6B;color:#fff;border:0;border-radius:999px;padding:12px 22px;font-size:15px;font-weight:700;min-height:44px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
+.btn:disabled{background:#C4D0CD;color:#4A5A5E;cursor:default}
+.btn.sm{padding:8px 18px}
+.btn.wide{width:100%;min-height:48px;font-size:16px}
+.wrap{max-width:1180px;margin:0 auto;padding:40px 48px}
+h1{font-size:40px;font-weight:800;letter-spacing:-.03em;margin:0 0 8px}
+.sub{margin:0;color:#55656A;font-size:16px}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin:28px 0 32px}
+.chip{padding:10px 18px;border-radius:999px;background:#fff;border:1px solid #D3DAD6;font-size:14px;font-weight:600;color:#1C2B2D;min-height:44px;cursor:pointer}
+.chip.on{background:#1C2B2D;color:#fff;border-color:#1C2B2D}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px}
+.card{background:#fff;border:1px solid #D3DAD6;border-radius:16px;overflow:hidden}
+.ph{height:150px;display:flex;align-items:center;justify-content:center;font-size:64px;font-weight:800;color:#1F6F6B}
+.t1{background:#D5E6E1}.t2{background:#F1E1CF}.t3{background:#D8E2EC}
+.bd{padding:18px 20px 20px}
+.cat{font-size:13px;color:#55656A}
+.ti{font-size:18px;font-weight:700;letter-spacing:-.01em;margin:4px 0 0;overflow-wrap:anywhere}
+.ft{display:flex;justify-content:space-between;align-items:center;margin-top:16px;gap:8px}
+.acts{display:flex;align-items:center;gap:4px}
+.price{background:#F0C75E;padding:6px 12px;border-radius:8px 8px 8px 2px;font-weight:800;font-size:17px}
+.empty{color:#55656A;font-size:16px}
+.narrow{max-width:620px;margin:0 auto}
+.f{background:#fff;border:1px solid #D3DAD6;border-radius:16px;padding:32px;margin-bottom:24px}
+.lb{display:block;font-weight:600;font-size:14px;margin-bottom:20px}
+.in{display:block;width:100%;margin-top:8px;padding:14px;border:1px solid #7C8C88;border-radius:10px;font-size:16px;font-weight:500;background:#fff;color:#1C2B2D}
+textarea.in{min-height:110px;resize:vertical}
+.hint{display:block;margin-top:6px;font-weight:500;color:#55656A;font-size:13px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.auth{display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+.l{background:#1F6F6B;color:#fff;padding:64px;display:flex;flex-direction:column;justify-content:space-between;gap:32px}
+.l .logo svg{color:#fff}
+.l h1{font-size:44px;line-height:1.1;max-width:460px;margin:0 0 16px}
+.l p{margin:0;font-size:17px;max-width:420px;line-height:1.5}
+.tag{align-self:flex-start;background:#F0C75E;color:#1C2B2D;padding:10px 18px;border-radius:10px 10px 10px 2px;font-weight:800;font-size:20px}
+.r{display:flex;align-items:center;justify-content:center;padding:48px}
+.r .f{width:100%;max-width:400px;margin:0}
+.tabs{display:flex;gap:8px;margin-bottom:24px}
+.tab{flex:1;min-height:44px;border:0;border-radius:999px;background:#ECEFEA;font-size:15px;font-weight:700;color:#1C2B2D;cursor:pointer}
+.tab.on{background:#1C2B2D;color:#fff}
+.center{display:block;margin:12px auto 0}
+#toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,24px);background:#1C2B2D;color:#fff;padding:14px 22px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;transition:.2s;max-width:90vw}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast.bad{background:#B3402F}
+@media(max-width:760px){
+.hd{padding:12px 16px}.wrap{padding:24px 16px}h1{font-size:30px}.bal{display:none}
+.auth{grid-template-columns:1fr}.l{padding:32px}.l h1{font-size:32px}.r{padding:24px 16px}
+.row{grid-template-columns:1fr}.f{padding:24px}
+}
+</style>
+</head>
+<body>
+<header class="hd" id="hd"></header>
+<main id="main" class="wrap"></main>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+const S = { token: localStorage.getItem('token'), user: null, cats: [], items: [], cat: null, view: 'catalog', mode: 'login' };
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const fmt = n => Number(n).toLocaleString('ru-RU', { maximumFractionDigits: 2 });
+const TAG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M3 12V4h8l10 10-8 8L3 12z"/><circle cx="7.5" cy="8.5" r="1.2"/></svg>';
+const RU = {
+  'insufficient funds': 'Недостаточно средств', 'item was sell': 'Товар уже продан',
+  'you cant buy yours item': 'Нельзя купить свой товар', 'Username already taken': 'Это имя уже занято',
+  'Invalid login or password': 'Неверный логин или пароль', 'User not found': 'Неверный логин или пароль',
+  'category not found': 'Категория не найдена', 'category already existing': 'Такая категория уже есть',
+  'not enough permissions': 'Недостаточно прав', 'item not found': 'Товар не найден',
+  'user not found': 'Пользователь не найден', 'Not authenticated': 'Войдите в аккаунт'
+};
+const msg = m => RU[m] || m;
+
+let timer;
+function toast(text, bad) {
+  const t = $('#toast');
+  t.textContent = text;
+  t.className = bad ? 'show bad' : 'show';
+  clearTimeout(timer);
+  timer = setTimeout(() => { t.className = ''; }, 3500);
+}
+
+async function api(path, o = {}) {
+  const headers = {};
+  if (S.token) headers.Authorization = 'Bearer ' + S.token;
+  let body;
+  if (o.form) { headers['Content-Type'] = 'application/x-www-form-urlencoded'; body = new URLSearchParams(o.form); }
+  else if (o.json) { headers['Content-Type'] = 'application/json'; body = JSON.stringify(o.json); }
+  const r = await fetch(path, { method: o.method || 'GET', headers, body });
+  let data = null;
+  if (r.status !== 204) { try { data = await r.json(); } catch (e) { /* пустой ответ */ } }
+  if (!r.ok) {
+    if (r.status === 401 && S.token && !o.noLogout) logout(true);
+    const d = data && data.detail;
+    throw new Error(Array.isArray(d) ? 'Проверьте поля: ' + d[0].msg : (d || 'Ошибка ' + r.status));
+  }
+  return data;
+}
+
+const loadUser = async () => { if (!S.token) { S.user = null; return; } try { S.user = await api('/auth/me'); } catch (e) { S.user = null; } };
+const loadItems = async () => { S.items = await api('/items'); };
+const loadCats = async () => { S.cats = await api('/category'); };
+
+function logout(silent) {
+  S.token = null; S.user = null;
+  localStorage.removeItem('token');
+  if (!silent) S.view = 'catalog';
+  render();
+}
+
+function header() {
+  const u = S.user;
+  $('#hd').innerHTML = `<button class="logo" data-act="go" data-v="catalog">${TAG}MarketPlace</button><nav class="nav">` + (u
+    ? `<span class="bal">Баланс: ${fmt(u.balance)}</span>` +
+      (u.role === 'admin' ? '<button class="lnk" data-act="go" data-v="admin">Админ</button>' : '') +
+      '<button class="lnk" data-act="out">Выйти</button><button class="btn" data-act="go" data-v="sell">Продать товар</button>'
+    : '<button class="btn" data-act="go" data-v="auth">Войти</button>') + '</nav>';
+}
+
+function catalog() {
+  const catName = id => (S.cats.find(c => c.id === id) || {}).name || 'Без категории';
+  const list = S.items.filter(i => !S.cat || i.category_id === S.cat);
+  const chips = [{ id: '', name: 'Все' }, ...S.cats].map(c =>
+    `<button class="chip${(c.id || null) === S.cat ? ' on' : ''}" data-act="cat" data-id="${c.id}">${esc(c.name)}</button>`).join('');
+  const admin = S.user && S.user.role === 'admin';
+  const cards = list.map(i => {
+    const mine = S.user && i.owner_id === S.user.id;
+    const buy = mine ? '<button class="btn sm" disabled>Ваш товар</button>' : `<button class="btn sm" data-act="buy" data-id="${i.id}">Купить</button>`;
+    const del = admin ? `<button class="lnk bad" data-act="del" data-id="${i.id}">Удалить</button>` : '';
+    const letter = esc(([...i.title.trim()][0] || '?').toUpperCase());
+    return `<article class="card"><div class="ph t${i.id % 3 + 1}" aria-hidden="true">${letter}</div><div class="bd"><span class="cat">${esc(catName(i.category_id))}</span><h3 class="ti">${esc(i.title)}</h3><div class="ft"><span class="price">${fmt(i.price)}</span><span class="acts">${del}${buy}</span></div></div></article>`;
+  }).join('');
+  $('#main').innerHTML = `<h1>Товары в продаже</h1><p class="sub">Нашли нужное — нажмите «Купить», и деньги спишутся с баланса.</p><div class="chips">${chips}</div>` +
+    (list.length ? `<div class="grid">${cards}</div>` : `<p class="empty">Здесь пока пусто. ${S.user ? 'Выставьте первый товар.' : 'Войдите, чтобы выставить товар.'}</p>`);
+}
+
+function auth() {
+  const reg = S.mode === 'reg';
+  $('#main').innerHTML = `<div class="auth"><section class="l"><button class="logo" data-act="go" data-v="catalog">${TAG}MarketPlace</button>
+<div><h1>Продавайте ненужное, покупайте нужное</h1><p>Зарегистрируйтесь, и на баланс сразу придёт стартовая сумма — можно покупать.</p></div><span class="tag">+100 на баланс</span></section>
+<section class="r"><form class="f" data-form="auth"><div class="tabs"><button type="button" class="tab${reg ? '' : ' on'}" data-act="mode" data-v="login">Вход</button><button type="button" class="tab${reg ? ' on' : ''}" data-act="mode" data-v="reg">Регистрация</button></div>
+<label class="lb">Имя пользователя<input class="in" name="username" required ${reg ? 'minlength="3"' : ''} maxlength="50" autocomplete="username"></label>
+<label class="lb">Пароль<input class="in" type="password" name="password" required ${reg ? 'minlength="8" maxlength="72"' : ''} autocomplete="${reg ? 'new-password' : 'current-password'}">${reg ? '<span class="hint">От 8 символов</span>' : ''}</label>
+<button class="btn wide" type="submit">${reg ? 'Создать аккаунт' : 'Войти'}</button><button type="button" class="lnk center" data-act="go" data-v="catalog">Вернуться в каталог</button></form></section></div>`;
+}
+
+function sell() {
+  $('#main').innerHTML = `<div class="narrow"><h1>Выставить товар</h1><form class="f" data-form="sell">
+<label class="lb">Название<input class="in" name="title" required></label>
+<label class="lb">Описание<textarea class="in" name="description"></textarea></label>
+<div class="row"><label class="lb">Цена<input class="in" name="price" type="number" min="0.01" step="0.01" required><span class="hint">Больше нуля</span></label>
+<label class="lb">Категория<select class="in" name="category_id" required><option value="">Выберите категорию</option>${S.cats.map(c => `<option value="${c.id}">${esc(c.name)}</option>`).join('')}</select></label></div>
+<button class="btn" type="submit">Опубликовать</button></form></div>`;
+}
+
+function admin() {
+  $('#main').innerHTML = `<div class="narrow"><h1>Админ-панель</h1>
+<form class="f" data-form="cat"><label class="lb">Новая категория<input class="in" name="name" required></label><button class="btn" type="submit">Добавить категорию</button></form>
+<form class="f" data-form="role"><label class="lb">Выдать права администратора<input class="in" name="id" type="number" min="1" required><span class="hint">Введите id пользователя</span></label><button class="btn" type="submit">Выдать права</button></form>
+<p class="sub">Удалять товары можно прямо в каталоге.</p></div>`;
+}
+
+function render() {
+  if (['sell', 'admin'].includes(S.view) && !S.user) S.view = 'auth';
+  if (S.view === 'admin' && S.user.role !== 'admin') S.view = 'catalog';
+  const full = S.view === 'auth';
+  $('#hd').hidden = full;
+  $('#main').className = full ? '' : 'wrap';
+  header();
+  ({ catalog, auth, sell, admin })[S.view]();
+}
+
+document.addEventListener('click', async e => {
+  const b = e.target.closest('[data-act]');
+  if (!b) return;
+  const { act, v, id } = b.dataset;
+  try {
+    if (act === 'go') { S.view = v; render(); window.scrollTo(0, 0); }
+    else if (act === 'out') logout();
+    else if (act === 'mode') { S.mode = v; render(); }
+    else if (act === 'cat') { S.cat = id ? Number(id) : null; render(); }
+    else if (act === 'buy') {
+      if (!S.user) { S.view = 'auth'; render(); return; }
+      b.disabled = true;
+      await api(`/items/${id}/buy`, { method: 'POST' });
+      toast('Покупка оформлена');
+      await Promise.all([loadItems(), loadUser()]);
+      render();
+    } else if (act === 'del') {
+      if (!confirm('Удалить товар?')) return;
+      await api(`/admin/items/${id}`, { method: 'DELETE' });
+      toast('Товар удалён');
+      await loadItems();
+      render();
+    }
+  } catch (err) { toast(msg(err.message), true); b.disabled = false; }
+});
+
+document.addEventListener('submit', async e => {
+  e.preventDefault();
+  const f = e.target, kind = f.dataset.form, d = Object.fromEntries(new FormData(f));
+  const btn = f.querySelector('[type=submit]');
+  btn.disabled = true;
+  try {
+    if (kind === 'auth') {
+      const reg = S.mode === 'reg';
+      if (reg) await api('/auth/register', { method: 'POST', json: { username: d.username, password: d.password } });
+      const t = await api('/auth/login', { method: 'POST', form: d, noLogout: true });
+      S.token = t.access_token;
+      localStorage.setItem('token', S.token);
+      await loadUser();
+      S.view = 'catalog';
+      render();
+      toast(reg ? 'Аккаунт создан' : 'Вы вошли');
+    } else if (kind === 'sell') {
+      await api('/items', { method: 'POST', json: { title: d.title, description: d.description || null, price: Number(d.price), category_id: Number(d.category_id) } });
+      await loadItems();
+      S.view = 'catalog';
+      render();
+      toast('Товар опубликован');
+    } else if (kind === 'cat') {
+      await api('/admin/categories', { method: 'POST', json: { name: d.name } });
+      await loadCats();
+      f.reset();
+      toast('Категория добавлена');
+    } else if (kind === 'role') {
+      await api(`/admin/users/${d.id}/role`, { method: 'PATCH' });
+      f.reset();
+      toast('Права выданы');
+    }
+  } catch (err) { toast(msg(err.message), true); }
+  btn.disabled = false;
+});
+
+(async function init() {
+  await Promise.all([
+    loadUser(),
+    loadCats().catch(() => toast('Не удалось загрузить категории', true)),
+    loadItems().catch(err => toast(msg(err.message), true))
+  ]);
+  render();
+})();
+</script>
+</body>
+</html>
