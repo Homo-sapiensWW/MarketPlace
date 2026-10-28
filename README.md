@@ -1,6 +1,9 @@
 # 🛒 Marketplace REST API
 
 A marketplace backend service with support for user authentication (JWT), a role-based access control model (RBAC), a product catalog, categories, and atomic transactions based on **FastAPI** and **PostgreSQL**.
+<img width="1830" height="884" alt="Снимок экрана 2026-10-28 095458" src="https://github.com/user-attachments/assets/f66675b6-4d72-45c9-9df2-6728a668d57a" />
+<img width="1212" height="833" alt="Снимок экрана 2026-10-28 095503" src="https://github.com/user-attachments/assets/52b00c8a-de38-46c2-b297-fb548b5baa7d" />
+<img width="1831" height="883" alt="Снимок экрана 2026-10-28 095540" src="https://github.com/user-attachments/assets/6c69a521-7ca8-4315-9835-7a87d27abac2" />
 
 ---
 
